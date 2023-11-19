@@ -19,6 +19,14 @@ const ticketSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["en revision", "finalizado"],
+      default: "en revision",
+    },
+    adminComments: {
+      type: String,
+    },
   },
   {
     timestamps: true,
