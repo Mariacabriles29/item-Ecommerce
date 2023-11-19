@@ -44,9 +44,6 @@ function NavBar() {
         <Link href="/categories">
           <button className="dropdown-item">Categories</button>
         </Link>
-        <Link href="/tickets">
-          <button className="dropdown-item">Tickets</button>
-        </Link>
       </>
     );
   };
@@ -79,6 +76,9 @@ function NavBar() {
         <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <Link href="/profile">
             <button className="dropdown-item">Profile</button>
+          </Link>
+          <Link href="/tickets">
+            <button className="dropdown-item">Tickets</button>
           </Link>
           {auth.user.role === "admin" && adminRouter()}
           <div className="dropdown-divider"></div>
