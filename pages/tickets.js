@@ -7,17 +7,38 @@ const TicketForm = () => {
   const { state, dispatch } = useContext(DataContext);
   const { auth } = state;
 
-  const handleSubmit = () => {
-    const newTicket = {
-      id: Date.now(),
-      title,
-      description,
-    };
+  const handleSubmit = async () => {
+    try {
+      const newTicket = {
+        name: title,
+        description,
+        email: auth.user.email,
+      };
+      const response = await fetch("/api/ticket", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTicket),
+      });
 
-    dispatch({ type: "ADD_TICKET", payload: newTicket });
+      if (!response.ok) {
+        dispatch({
+          type: "NOTIFY",
+          payload: { error: "Error al crear el ticket" },
+        });
+        throw new Error("Error al crear el ticket");
+      }
 
-    setTitle("");
-    setDescription("");
+      const createdTicket = await response.json();
+
+      dispatch({ type: "ADD_TICKET", payload: createdTicket });
+
+      setTitle("");
+      setDescription("");
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
   };
 
   return (
