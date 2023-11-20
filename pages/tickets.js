@@ -34,13 +34,14 @@ const TicketForm = () => {
   const handleSubmit = async () => {
     try {
       const newTicket = {
-        id: selectedTicket._id,
+        id: selectedTicket?._id,
         name: title,
         description,
         email: auth.user.email,
         status: auth.user.role === "admin" ? status : "en revision",
         adminComments: auth.user.role === "admin" ? adminComments : "",
       };
+      console.log("selectTicket", selectedTicket);
 
       const url = selectedTicket
         ? `/api/ticket/${selectedTicket._id}`
@@ -55,6 +56,7 @@ const TicketForm = () => {
         },
         body: JSON.stringify(newTicket),
       });
+      console.log("response", response);
 
       if (!response.ok) {
         dispatch({

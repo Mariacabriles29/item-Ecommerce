@@ -7,9 +7,27 @@ import { postData } from "../utils/fetchData";
 import { useRouter } from "next/router";
 
 const Register = () => {
-  const initialState = { name: "", email: "", password: "", cf_password: "" };
+  const initialState = {
+    name: "",
+    last_name: "",
+    phone_number: "",
+    address: "",
+    country_of_residence: "",
+    email: "",
+    password: "",
+    cf_password: "",
+  };
   const [userData, setUserData] = useState(initialState);
-  const { name, email, password, cf_password } = userData;
+  const {
+    name,
+    last_name,
+    phone_number,
+    address,
+    country_of_residence,
+    email,
+    password,
+    cf_password,
+  } = userData;
 
   const { state, dispatch } = useContext(DataContext);
   const { auth } = state;
@@ -24,12 +42,22 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errMsg = valid(name, email, password, cf_password);
+    const errMsg = valid(
+      name,
+      last_name,
+      phone_number,
+      address,
+      country_of_residence,
+      email,
+      password,
+      cf_password
+    );
     if (errMsg) return dispatch({ type: "NOTIFY", payload: { error: errMsg } });
 
     dispatch({ type: "NOTIFY", payload: { loading: true } });
 
     const res = await postData("auth/register", userData);
+    console.log("Register Response:", res);
 
     if (res.err)
       return dispatch({ type: "NOTIFY", payload: { error: res.err } });
@@ -60,6 +88,53 @@ const Register = () => {
             id="name"
             name="name"
             value={name}
+            onChange={handleChangeInput}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="last_name">Last Name</label>
+          <input
+            type="text"
+            className="form-control"
+            id="last_name"
+            name="last_name"
+            value={last_name}
+            onChange={handleChangeInput}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="phone_number">Phone Number</label>
+          <input
+            type="text"
+            className="form-control"
+            id="phone_number"
+            name="phone_number"
+            value={phone_number}
+            onChange={handleChangeInput}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="address">Address</label>
+          <input
+            type="text"
+            className="form-control"
+            id="address"
+            name="address"
+            value={address}
+            onChange={handleChangeInput}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="country_of_residence">Country of Residence</label>
+          <input
+            type="text"
+            className="form-control"
+            id="country_of_residence"
+            name="country_of_residence"
+            value={country_of_residence}
             onChange={handleChangeInput}
           />
         </div>

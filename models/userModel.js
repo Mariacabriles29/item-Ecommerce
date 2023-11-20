@@ -6,6 +6,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    last_name: {
+      type: String,
+      required: true,
+    },
+    phone_number: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    country_of_residence: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
@@ -26,7 +42,7 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default:
-        "https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png",
+        "https://res.cloudinary.com/ddtwmoh7j/image/upload/v1700484068/avatar_user_edwqfe.png",
     },
   },
   {
