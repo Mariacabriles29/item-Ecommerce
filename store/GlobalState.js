@@ -1,6 +1,6 @@
 import { createContext, useReducer, useEffect } from "react";
 import reducers from "./Reducers";
-import { getData } from "../utils/fetchData";
+import { getData, putData } from "../utils/fetchData";
 
 export const DataContext = createContext();
 
@@ -14,6 +14,8 @@ export const DataProvider = ({ children }) => {
     users: [],
     categories: [],
     tickets: [],
+    deleteCategories: [],
+    editCategories: [],
   };
 
   const [state, dispatch] = useReducer(reducers, initialState);
@@ -90,6 +92,38 @@ export const DataProvider = ({ children }) => {
       dispatch({ type: "ADD_USERS", payload: [] });
     }
   }, [auth.token]);
+
+  const handleEditCategory = async (categoryId, updatedData) => {
+    try {
+      const res = await putData(`categories/${categoryId}`, updatedData);
+
+      if (res.err)
+        return dispatch({ type: "NOTIFY", payload: { error: res.err } });
+
+      dispatch({
+        type: "EDIT_CATEGORIES",
+        payload: res.categories,
+      });
+    } catch (error) {
+      console.error("Error during category edit:", error);
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId) => {
+    try {
+      const res = await deleteData(`categories/${categoryId}`);
+
+      if (res.err)
+        return dispatch({ type: "NOTIFY", payload: { error: res.err } });
+
+      dispatch({
+        type: "DELETE_CATEGORIES",
+        payload: res.categories,
+      });
+    } catch (error) {
+      console.error("Error during category deletion:", error);
+    }
+  };
 
   return (
     <DataContext.Provider value={{ state, dispatch }}>

@@ -43,7 +43,12 @@ const reducers = (state, action) => {
         tickets: action.payload,
       };
 
-    case ACTIONS.ADD_CATEGORIES:
+    case ACTIONS.DELETE_CATEGORIES:
+      return {
+        ...state,
+        categories: action.payload,
+      };
+    case ACTIONS.EDIT_CATEGORIES:
       return {
         ...state,
         categories: action.payload,

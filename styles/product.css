@@ -14,13 +14,14 @@
   border: 0;
 }
 
-.card-body {
+.products  .card-body {
   background-color: #dd7596;
 }
 
-.card-body * {
+.products .card-body * {
   color: white;
 }
+
 .products .card-img-top {
   height: 250px;
   width: 100%;
@@ -65,4 +66,18 @@ fill: white;
 .cart-item .badge{
   position: relative;
   top: -5px;
+}
+
+.categories{
+  cursor: pointer;
+}
+
+.fa-edit{
+  cursor: pointer;
+
+}
+
+.fa-trash-alt{
+  cursor: pointer;
+
 }

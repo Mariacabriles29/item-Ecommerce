@@ -1,110 +1,211 @@
+import React, { useState, useContext } from "react";
 import Head from "next/head";
-import { useContext, useState } from "react";
 import { DataContext } from "../store/GlobalState";
 import { updateItem } from "../store/Actions";
 import { postData, putData } from "../utils/fetchData";
 
 const Categories = () => {
   const [name, setName] = useState("");
+  const [id, setId] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const { state, dispatch } = useContext(DataContext);
   const { categories, auth } = state;
 
-  const [id, setId] = useState("");
+  const handleOpenModal = () => {
+    setShowModal(true);
+    setName("");
+    setId("");
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setName("");
+    setId("");
+  };
 
   const createCategory = async () => {
-    if (auth.user.role !== "admin")
+    if (auth.user.role !== "admin") {
       return dispatch({
         type: "NOTIFY",
-        payload: { error: "Authentication is not vaild." },
+        payload: { error: "Authentication is not valid." },
       });
+    }
 
-    if (!name)
+    if (!name) {
       return dispatch({
         type: "NOTIFY",
         payload: { error: "Name can not be left blank." },
       });
+    }
 
     dispatch({ type: "NOTIFY", payload: { loading: true } });
 
     let res;
     if (id) {
       res = await putData(`categories/${id}`, { name }, auth.token);
-      if (res.err)
-        return dispatch({ type: "NOTIFY", payload: { error: res.err } });
-      dispatch(updateItem(categories, id, res.category, "ADD_CATEGORIES"));
+      if (res.err) {
+        dispatch({ type: "NOTIFY", payload: { error: res.err } });
+      } else {
+        dispatch(updateItem(categories, id, res.category, "ADD_CATEGORIES"));
+        handleCloseModal();
+      }
     } else {
       res = await postData("categories", { name }, auth.token);
-      if (res.err)
-        return dispatch({ type: "NOTIFY", payload: { error: res.err } });
-      dispatch({
-        type: "ADD_CATEGORIES",
-        payload: [...categories, res.newCategory],
-      });
+      if (res.err) {
+        dispatch({ type: "NOTIFY", payload: { error: res.err } });
+      } else {
+        dispatch({
+          type: "ADD_CATEGORIES",
+          payload: [...categories, res.newCategory],
+        });
+        handleCloseModal();
+      }
     }
-    setName("");
-    setId("");
-    return dispatch({ type: "NOTIFY", payload: { success: res.msg } });
+
+    dispatch({ type: "NOTIFY", payload: { success: res.msg } });
   };
 
-  const handleEditCategory = (catogory) => {
-    setId(catogory._id);
-    setName(catogory.name);
+  const handleEditCategory = (category) => {
+    setId(category._id);
+    setName(category.name);
+    setShowModal(true);
   };
 
   return (
-    <div className="col-md-6 mx-auto my-3">
+    <div className="container">
       <Head>
         <title>Categories</title>
       </Head>
+      <h3 className="text-center">List Categories</h3>
+      <button
+        className="btn btn-secondary ml-1"
+        data-toggle="modal"
+        data-target="#exampleModal2"
+        onClick={handleOpenModal}
+      >
+        Create
+      </button>
 
-      <div className="input-group mb-3">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Add a new category"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      <table className="table table-bordered mt-3">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Category Name</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {categories.map((category) => (
+            <tr key={category._id}>
+              <td>{category.name}</td>
+              <td>
+                <i
+                  className="fas fa-edit mr-2 text-info"
+                  onClick={() => handleEditCategory(category)}
+                  data-toggle="modal"
+                  data-target="#exampleModal2"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="bi bi-pencil-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                  </svg>
+                </i>
 
-        <button className="btn btn-secondary ml-1" onClick={createCategory}>
-          {id ? "Update" : "Create"}
-        </button>
-      </div>
+                <i
+                  className="fas fa-trash-alt text-danger"
+                  data-toggle="modal"
+                  data-target="#exampleModal2"
+                  onClick={() =>
+                    dispatch({
+                      type: "ADD_MODAL",
+                      payload: [
+                        {
+                          data: categories,
+                          id: category._id,
+                          title: category.name,
+                          type: "ADD_CATEGORIES",
+                        },
+                      ],
+                    })
+                  }
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="bi bi-trash3-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                  </svg>
+                </i>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      {categories.map((catogory) => (
-        <div key={catogory._id} className="card my-2 text-capitalize">
-          <div className="card-body d-flex justify-content-between">
-            {catogory.name}
-
-            <div style={{ cursor: "pointer" }}>
-              <i
-                className="fas fa-edit mr-2 text-info"
-                onClick={() => handleEditCategory(catogory)}
-              ></i>
-
-              <i
-                className="fas fa-trash-alt text-danger"
-                data-toggle="modal"
-                data-target="#exampleModal"
-                onClick={() =>
-                  dispatch({
-                    type: "ADD_MODAL",
-                    payload: [
-                      {
-                        data: categories,
-                        id: catogory._id,
-                        title: catogory.name,
-                        type: "ADD_CATEGORIES",
-                      },
-                    ],
-                  })
-                }
-              ></i>
+      <div
+        className="modal fade"
+        id="exampleModal2"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel1"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">
+                {id ? "Edit Category" : "Add Category"}
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={handleCloseModal}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              {/* Contenido del formulario */}
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Category Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                onClick={handleCloseModal}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={createCategory}
+                data-dismiss="modal"
+              >
+                {id ? "Update" : "Create"}
+              </button>
             </div>
           </div>
         </div>
-      ))}
+      </div>
     </div>
   );
 };
