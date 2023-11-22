@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { DataContext } from "../store/GlobalState";
 import Cookie from "js-cookie";
 import filterSearch from "../utils/filterSearch";
+import { signOut } from "next-auth/react";
 
 function NavBar() {
   const [search, setSearch] = useState("");
@@ -29,6 +30,7 @@ function NavBar() {
     localStorage.removeItem("firstLogin");
     dispatch({ type: "AUTH", payload: {} });
     dispatch({ type: "NOTIFY", payload: { success: "Logged out!" } });
+    signOut();
     return router.push("/");
   };
 
@@ -157,10 +159,14 @@ function NavBar() {
             </Link>
           </li>
           {Object.keys(auth).length === 0 ? (
-            <li className="nav-item">
+            <li className="nav-item ">
               <Link href="/signin">
-                <button className={"nav-link" + isActive("/signin")}>
-                  <i className="fas fa-user" aria-hidden="true"></i> Sign in
+                <button
+                  className={
+                    "nav-link sign-in-button-navbar" + isActive("/signin")
+                  }
+                >
+                  Sign in
                 </button>
               </Link>
             </li>

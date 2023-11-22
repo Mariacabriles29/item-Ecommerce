@@ -12,5 +12,8 @@ module.exports = {
     GOOGLE_CLIENT_ID:
       "755232149573-c53r7qlcvavrq66vku7mss642aqbepkv.apps.googleusercontent.com",
     GOOGLE_CLIENT_SECRET: "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",
+    NEXTAUTH_URL: "http://localhost:3000",
+    GITHUB_ID: "de0496cd966f2a664fbd",
+    GITHUB_SECRET: "1613988ff899a8060d67e77e06dd6896780c2d89",
   },
 };

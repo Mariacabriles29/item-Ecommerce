@@ -81,3 +81,21 @@ fill: white;
   cursor: pointer;
 
 }
+
+
+.sign-in-button-navbar{
+  background-color: #60afff;
+  color:#fff!important;
+  font-weight: bold;
+  border:0!important;
+  border-radius: 10px;
+  
+}
+.nav-link.sign-in-button-navbar:active, 
+.nav-link.sign-in-button-navbar:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
+

@@ -9,16 +9,20 @@ import { GoogleLogin } from "@react-oauth/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import jwt from "jsonwebtoken";
 import valid from "../utils/valid";
+import { useSession, signIn, signOut } from "next-auth/react"; // Importa solo lo necesario de next-auth/react
+import { MarkGithubIcon } from "@primer/octicons-react";
 
 const Signin = () => {
   const initialState = { email: "", password: "" };
   const [userData, setUserData] = useState(initialState);
+  const [loginGithub, setLoginGithub] = useState(false);
   const { email, password } = userData;
 
   const { state, dispatch } = useContext(DataContext);
   const { auth } = state;
 
   const router = useRouter();
+  const { data: session } = useSession();
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -41,7 +45,12 @@ const Signin = () => {
     if (errMsg) return dispatch({ type: "NOTIFY", payload: { error: errMsg } });
 
     dispatch({ type: "NOTIFY", payload: { loading: true } });
+    let newAvatar =
+      "https://res.cloudinary.com/ddtwmoh7j/image/upload/v1700484068/avatar_user_edwqfe.png";
 
+    if (newCurrentUser?.avatar) {
+      newAvatar = newCurrentUser.avatar;
+    }
     const currentUser = {
       name: newCurrentUser.given_name,
       last_name: newCurrentUser.family_name,
@@ -51,7 +60,9 @@ const Signin = () => {
       email: newCurrentUser.email,
       password: "123456",
       cf_password: "123456",
+      avatar: newAvatar,
     };
+    console.log("currentUser ", currentUser);
 
     const res = await postData("auth/register", currentUser);
 
@@ -114,78 +125,103 @@ const Signin = () => {
   };
 
   useEffect(() => {
+    if (session) {
+      const { email, name, image } = session.user;
+      const currentUser = {
+        email,
+        given_name: name,
+        family_name: " ",
+        avatar: image,
+      };
+      userRegister(currentUser);
+    }
+  }, [session]);
+
+  useEffect(() => {
     if (Object.keys(auth).length !== 0) router.push("/");
   }, [auth]);
+
   //304531247476-58f940f3b0dgrupg95cdo8b51fspupdv.apps.googleusercontent.com
+
   return (
     <GoogleOAuthProvider clientId="304531247476-58f940f3b0dgrupg95cdo8b51fspupdv.apps.googleusercontent.com">
-      <div>
+      <div className="container-fluid">
         <Head>
           <title>Sign in Page</title>
         </Head>
 
-        <div />
-
-        <form
-          className="mx-auto my-4"
-          style={{ maxWidth: "500px" }}
-          onSubmit={handleSubmit}
-        >
-          <div className="form-group">
-            <label htmlFor="exampleInputEmail1">Email address</label>
-            <input
-              type="email"
-              className="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
-              name="email"
-              value={email}
-              onChange={handleChangeInput}
-            />
-            <small id="emailHelp" className="form-text text-muted">
-              We'll never share your email with anyone else.
-            </small>
-          </div>
-          <div className="form-group">
-            <label htmlFor="exampleInputPassword1">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              id="exampleInputPassword1"
-              name="password"
-              value={password}
-              onChange={handleChangeInput}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn btn-dark w-100"
-            onClick={() => signIn}
+        <div className="login-ecommerce">
+          <form
+            className="mx-auto my-4"
+            style={{ maxWidth: "500px" }}
+            onSubmit={handleSubmit}
           >
-            Login
-          </button>
+            <div className="form-group">
+              <label htmlFor="exampleInputEmail1">Email address</label>
+              <input
+                type="email"
+                className="form-control"
+                id="exampleInputEmail1"
+                aria-describedby="emailHelp"
+                name="email"
+                value={email}
+                onChange={handleChangeInput}
+              />
+              <small id="emailHelp" className="form-text text-muted">
+                We'll never share your email with anyone else.
+              </small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="exampleInputPassword1">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                id="exampleInputPassword1"
+                name="password"
+                value={password}
+                onChange={handleChangeInput}
+              />
+            </div>
 
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              console.log(credentialResponse);
+            <button type="submit" className="btn btn-dark w-100">
+              Login
+            </button>
+          </form>
 
-              const newCurrentUser = jwt.decode(credentialResponse.credential);
-              userRegister(newCurrentUser);
-            }}
-            onError={() => {
-              console.log("Login Failed");
-            }}
-            useOneTap
-          />
+          <div className="mx-auto bt-integration ">
+            <button
+              className="btn btn-dark flex-grow-1 me-2 d-flex align-items-center justify-content-center w-100"
+              onClick={() => {
+                signIn("github");
+                console.log("enter");
+              }}
+            >
+              <MarkGithubIcon size={16} className="me-2 mr-2" />
+              Sign in with GitHub
+            </button>
 
-          <p className="my-2">
-            You don't have an account?{" "}
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                console.log(credentialResponse);
+                const newCurrentUser = jwt.decode(
+                  credentialResponse.credential
+                );
+                userRegister(newCurrentUser);
+              }}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+              useOneTap
+            />
+          </div>
+          <div className="register">
+            <p className="my-2">You don't have an account?</p>
+
             <Link href="/register">
-              <button style={{ color: "crimson" }}>Register Now</button>
+              <button className=" btn btn-dark mt-2">Register Now</button>
             </Link>
-          </p>
-        </form>
+          </div>
+        </div>
       </div>
     </GoogleOAuthProvider>
   );
