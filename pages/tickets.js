@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { DataContext } from "../store/GlobalState";
-
+import ChatModal from "../components/ChatModal";
 const TicketForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -140,7 +140,7 @@ const TicketForm = () => {
             <th>Descripción</th>
             <th>Estado</th>
             <th>Comentarios del Admin</th>
-            {auth.user?.role === "admin" && <th>Acciones</th>}
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -151,16 +151,25 @@ const TicketForm = () => {
               <td>{ticket.description}</td>
               <td>
                 {ticket.status === "finalizado" ? (
-                  <span class="badge badge-success">{ticket.status}</span>
+                  <span className="badge badge-success">{ticket.status}</span>
                 ) : (
-                  <span class="badge badge-pill badge-info">
+                  <span className="badge badge-pill badge-info">
                     {ticket.status}
                   </span>
                 )}
               </td>
               <td>{ticket.adminComments}</td>
-              {auth.user?.role === "admin" && (
-                <td>
+              <td>
+                <button
+                  type="button"
+                  className="btn btn-success mr-2"
+                  data-toggle="modal"
+                  data-target="#exampleModal3"
+                  onClick={() => setShowModal(true)}
+                >
+                  Chatear
+                </button>
+                {auth.user?.role === "admin" && (
                   <button
                     className="btn btn-info mr-2"
                     onClick={() => handleShow(ticket)}
@@ -169,8 +178,13 @@ const TicketForm = () => {
                   >
                     Editar
                   </button>
-                </td>
-              )}
+                )}
+                <ChatModal
+                  name={ticket.ticketNumber}
+                  show={showModal}
+                  handleClose={() => setShowModal(false)}
+                />
+              </td>
             </tr>
           ))}
         </tbody>

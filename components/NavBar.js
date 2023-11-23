@@ -62,8 +62,7 @@ function NavBar() {
           aria-expanded="false"
         >
           <img
-            src={auth.user.avatar}
-            alt={auth.user.avatar}
+            src={auth.user.avatar}            
             style={{
               borderRadius: "50%",
               width: "30px",

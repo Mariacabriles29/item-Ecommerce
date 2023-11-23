@@ -88,7 +88,7 @@ const Categories = () => {
       </button>
 
       <table className="table table-bordered mt-3">
-        <thead class="thead-dark">
+        <thead className="thead-dark">
           <tr>
             <th scope="col">Category Name</th>
             <th scope="col">Actions</th>
