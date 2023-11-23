@@ -10,7 +10,7 @@ module.exports = {
     CLOUD_NAME: "ddtwmoh7j",
     CLOUD_API: "https://api.cloudinary.com/v1_1/ddtwmoh7j/image/upload",
     GOOGLE_CLIENT_ID:
-      "755232149573-c53r7qlcvavrq66vku7mss642aqbepkv.apps.googleusercontent.com",
+      "304531247476-58f940f3b0dgrupg95cdo8b51fspupdv.apps.googleusercontent.com",
     GOOGLE_CLIENT_SECRET: "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",
     NEXTAUTH_URL: "http://localhost:3000",
     GITHUB_ID: "de0496cd966f2a664fbd",

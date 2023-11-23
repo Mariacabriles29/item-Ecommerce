@@ -141,10 +141,8 @@ const Signin = () => {
     if (Object.keys(auth).length !== 0) router.push("/");
   }, [auth]);
 
-  //304531247476-58f940f3b0dgrupg95cdo8b51fspupdv.apps.googleusercontent.com
-
   return (
-    <GoogleOAuthProvider clientId="304531247476-58f940f3b0dgrupg95cdo8b51fspupdv.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID}>
       <div className="container-fluid">
         <Head>
           <title>Sign in Page</title>

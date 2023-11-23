@@ -2,12 +2,15 @@ import React, { useState, useContext } from "react";
 import Head from "next/head";
 import { DataContext } from "../store/GlobalState";
 import { updateItem } from "../store/Actions";
-import { postData, putData } from "../utils/fetchData";
+
+import { postData, putData, deleteData } from "../utils/fetchData";
 
 const Categories = () => {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   const { state, dispatch } = useContext(DataContext);
   const { categories, auth } = state;
@@ -22,6 +25,16 @@ const Categories = () => {
     setShowModal(false);
     setName("");
     setId("");
+  };
+
+  const handleOpenDeleteModal = (category) => {
+    setCategoryToDelete(category);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setCategoryToDelete(null);
+    setShowDeleteModal(false);
   };
 
   const createCategory = async () => {
@@ -64,6 +77,27 @@ const Categories = () => {
     }
 
     dispatch({ type: "NOTIFY", payload: { success: res.msg } });
+  };
+
+  const handleDeleteCategory = async (categoryId) => {
+    try {
+      const res = await deleteData(`categories/${categoryId}`, auth.token);
+
+      if (res.err) {
+        return dispatch({ type: "NOTIFY", payload: { error: res.err } });
+      }
+
+      const newCatagories = categories.filter((c) => c._id != categoryId);
+
+      dispatch({
+        type: "ADD_CATEGORIES",
+        payload: [...newCatagories],
+      });
+
+      dispatch({ type: "NOTIFY", payload: { success: res.msg } });
+    } catch (error) {
+      console.error("Error during category deletion:", error);
+    }
   };
 
   const handleEditCategory = (category) => {
@@ -120,20 +154,8 @@ const Categories = () => {
                 <i
                   className="fas fa-trash-alt text-danger"
                   data-toggle="modal"
-                  data-target="#exampleModal2"
-                  onClick={() =>
-                    dispatch({
-                      type: "ADD_MODAL",
-                      payload: [
-                        {
-                          data: categories,
-                          id: category._id,
-                          title: category.name,
-                          type: "ADD_CATEGORIES",
-                        },
-                      ],
-                    })
-                  }
+                  data-target="#deleteCategoryModal"
+                  onClick={() => handleOpenDeleteModal(category)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -201,6 +223,58 @@ const Categories = () => {
                 data-dismiss="modal"
               >
                 {id ? "Update" : "Create"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="deleteCategoryModal"
+        tabIndex="-1"
+        aria-labelledby="deleteCategoryModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="deleteCategoryModalLabel">
+                Confirm Deletion
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={handleCloseDeleteModal}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              Are you sure you want to delete the category
+              {categoryToDelete && categoryToDelete.name}?
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                onClick={handleCloseDeleteModal}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger"
+                data-dismiss="modal"
+                onClick={() => {
+                  handleDeleteCategory(categoryToDelete._id);
+                  handleCloseDeleteModal();
+                }}
+              >
+                Delete
               </button>
             </div>
           </div>

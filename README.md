@@ -26,6 +26,29 @@ Este proyecto es un sistema de comercio electrónico desarrollado con Next.js y 
 
    La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
 
+5. **Configuración del Servidor de Chat con Socket.io**
+
+Antes de utilizar la funcionalidad de chat en tiempo real, inicie el servidor de chat ejecutando:
+
+```bash
+npm run start-server
+```
+
+6. **Configuración de la Base de Datos y Usuario Administrador**
+
+   -Iniciar MongoDB:
+
+-Asegúrese de tener el servidor de MongoDB en ejecución.
+
+**Registrar el Primer Usuario Administrador:**
+
+-Ejecute la aplicación y registre el primer usuario.
+Acceda a la base de datos y actualice el rol del primer usuario a "admin" y el campo root a "true" .
+
+**Alternar entre Roles de Usuario:**
+
+-Desde la interfaz de la aplicación con su usuario admin, puede modificar los roles de los usuarios registrados a su conveniencia. Alternar entre los roles admin y user según sea necesario.
+
 ## Características
 
 ### Ecommerce

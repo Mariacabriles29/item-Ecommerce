@@ -47,6 +47,7 @@ const Users = () => {
               <th>{user.name}</th>
               <th>{user.email}</th>
               <th>
+                {console.log("user", user.role, user.email)}
                 {user.role === "admin" ? (
                   user.root ? (
                     <i className="fas fa-check text-success"> Root</i>
