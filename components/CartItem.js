@@ -34,8 +34,7 @@ const CartItem = ({ item, dispatch, cart }) => {
           onClick={() => dispatch(decrease(cart, item._id))}
           disabled={item.quantity === 1 ? true : false}
         >
-          {" "}
-          -{" "}
+          -
         </button>
 
         <span className="px-3">{item.quantity}</span>
@@ -45,8 +44,7 @@ const CartItem = ({ item, dispatch, cart }) => {
           onClick={() => dispatch(increase(cart, item._id))}
           disabled={item.quantity === item.inStock ? true : false}
         >
-          {" "}
-          +{" "}
+          +
         </button>
       </td>
 

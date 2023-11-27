@@ -212,28 +212,54 @@ const Profile = () => {
 
               <tbody>
                 {orders.map((order) => (
-                  <tr key={order._id}>
+                  <tr key={order?._id}>
                     <td className="p-2">
-                      <Link href={`/order/${order._id}`}>
-                        <button>{order._id}</button>
+                      <Link href={`/order/${order?._id}`}>
+                        <span class="badge bg-info text-white">
+                          {order?._id}
+                        </span>
                       </Link>
                     </td>
-                    <td className="p-2">
-                      {new Date(order.createdAt).toLocaleDateString()}
+                    <td className="p-2 text-center">
+                      {new Date(order?.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="p-2">${order.total}</td>
-                    <td className="p-2">
-                      {order.delivered ? (
-                        <i className="fas fa-check text-success"></i>
+                    <td className="p-2 text-center">${order?.total}</td>
+                    <td className="p-2 text-center">
+                      {order?.delivered ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="1em"
+                          viewBox="0 0 448 512"
+                        >
+                          <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
+                        </svg>
                       ) : (
-                        <i className="fas fa-times text-danger"></i>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="1em"
+                          viewBox="0 0 384 512"
+                        >
+                          <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                        </svg>
                       )}
                     </td>
-                    <td className="p-2">
+                    <td className="p-2 text-center">
                       {order.paid ? (
-                        <i className="fas fa-check text-success"></i>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="1em"
+                          viewBox="0 0 448 512"
+                        >
+                          <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
+                        </svg>
                       ) : (
-                        <i className="fas fa-times text-danger"></i>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="1em"
+                          viewBox="0 0 384 512"
+                        >
+                          <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                        </svg>
                       )}
                     </td>
                   </tr>
